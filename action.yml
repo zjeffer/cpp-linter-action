@@ -131,7 +131,7 @@ runs:
           python3 -m venv "$GITHUB_ACTION_PATH/venv"
           source "$GITHUB_ACTION_PATH/venv/bin/activate"
         fi
-        python3 -m pip install -r "$GITHUB_ACTION_PATH/requirements.txt"
+        python3 -m pip install --user -r "$GITHUB_ACTION_PATH/requirements.txt"
         clang-tools -i ${{ inputs.version }} -b
 
     - name: Run cpp-linter
