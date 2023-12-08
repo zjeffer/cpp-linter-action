@@ -127,9 +127,11 @@ runs:
             fi
           fi
         fi
-        if [[ "${{runner.os}}"  == "macOS" ]]; then
-          python3 -m venv "$GITHUB_ACTION_PATH/venv"
-          source "$GITHUB_ACTION_PATH/venv/bin/activate"
+        python3 -m venv "$GITHUB_ACTION_PATH/venv"
+        if [[ "${{runner.os}}"  == "Windows" ]]; then
+          . "$GITHUB_ACTION_PATH/venv/Scripts/activate"
+        else
+          . "$GITHUB_ACTION_PATH/venv/bin/activate"
         fi
         python3 -m pip install -r "$GITHUB_ACTION_PATH/requirements.txt"
         clang-tools -i ${{ inputs.version }} -b
@@ -138,8 +140,10 @@ runs:
       id: cpp-linter
       shell: bash
       run: |
-        if [[ "${{runner.os}}"  == "macOS" ]]; then
-          source "$GITHUB_ACTION_PATH/venv/bin/activate"
+        if [[ "${{runner.os}}"  == "Windows" ]]; then
+          . "$GITHUB_ACTION_PATH/venv/Scripts/activate"
+        else
+          . "$GITHUB_ACTION_PATH/venv/bin/activate"
         fi
         cpp-linter \
           --style="${{ inputs.style }}" \
