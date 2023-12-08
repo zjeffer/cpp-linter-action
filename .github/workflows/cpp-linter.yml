@@ -1,28 +1,34 @@
 name: cpp-linter
 
 on:
-  push:
-    paths-ignore: "docs/**"
-  pull_request:
-    paths-ignore: "docs/**"
+    push:
+        paths-ignore: "docs/**"
+    pull_request:
+        paths-ignore: "docs/**"
 
 jobs:
-  cpp-linter:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: cpp-linter/cpp-linter-action@main
-        id: linter
-        continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          style: file
-          files-changed-only: false
-
-      - name: Fail fast?!
-        if: steps.linter.outputs.checks-failed != 0
-        run: |
-          echo "some linter checks failed. ${{ steps.linter.outputs.checks-failed }}"
-        # for actual deployment
-        # run: exit 1
+    cpp-linter:
+        strategy:
+            matrix:
+                os:
+                    - ubuntu
+                    - macos
+                    - windows
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v4
+            - name: Print info
+              run: |
+                  echo "Running on ${{ matrix.os }}"
+            - uses: ./ # uses action.yml in the root directory
+              id: linter
+              continue-on-error: true
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  style: file
+                  files-changed-only: false
+            - name: Fail fast?!
+              if: steps.linter.outputs.checks-failed != 0
+              run: |
+                  echo "some linter checks failed. ${{ steps.linter.outputs.checks-failed }}"
