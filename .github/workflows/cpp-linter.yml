@@ -28,6 +28,7 @@ jobs:
               with:
                   style: file
                   files-changed-only: false
+                  database: ${{github.workspace}}/demo/
             - name: Fail fast?!
               if: steps.linter.outputs.checks-failed != 0
               run: |
