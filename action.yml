@@ -140,15 +140,10 @@ runs:
       id: cpp-linter
       shell: bash
       run: |
-        echo "GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
         database_path=${{ inputs.database }}
-        echo "database_path: ${{ inputs.database }}"
         if [[ "${{runner.os}}"  == "Windows" ]]; then
           . "$GITHUB_ACTION_PATH/venv/Scripts/activate"
-          echo "PATH: $PATH"
-          # replace \ with / using sed, use : as sed delimiter
           database_path=$(printf "%s" "${{ inputs.database }}" | sed 's:\\:/:g')
-          echo "database_path after replacing: $database_path"
         else
           . "$GITHUB_ACTION_PATH/venv/bin/activate"
         fi
