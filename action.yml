@@ -140,12 +140,15 @@ runs:
       id: cpp-linter
       shell: bash
       run: |
+        echo "GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
+        echo "database_path: ${{ inputs.database }}"
+        database_path=${{ inputs.database }}
         if [[ "${{runner.os}}"  == "Windows" ]]; then
           . "$GITHUB_ACTION_PATH/venv/Scripts/activate"
-          database_path=${{ replace(inputs.database, '\', '\\') }} # fixes bug with Windows paths in bash
+          database_path=$(cygpath -w $database_path)
+          echo "database_path after replacing: $database_path"
         else
           . "$GITHUB_ACTION_PATH/venv/bin/activate"
-          database_path=${{ inputs.database }}
         fi
         cpp-linter \
           --style="${{ inputs.style }}" \
