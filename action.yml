@@ -145,7 +145,7 @@ runs:
         database_path=${{ inputs.database }}
         if [[ "${{runner.os}}"  == "Windows" ]]; then
           . "$GITHUB_ACTION_PATH/venv/Scripts/activate"
-          database_path=$(cygpath -w $database_path)
+          database_path=$(cygpath -u $database_path)
           echo "database_path after replacing: $database_path"
         else
           . "$GITHUB_ACTION_PATH/venv/bin/activate"
