@@ -141,11 +141,13 @@ runs:
       shell: bash
       run: |
         echo "GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
-        echo "database_path: ${{ inputs.database }}"
         database_path=${{ inputs.database }}
+        echo "database_path: $database_path"
         if [[ "${{runner.os}}"  == "Windows" ]]; then
           . "$GITHUB_ACTION_PATH/venv/Scripts/activate"
-          database_path=$(cygpath -u $database_path)
+          echo "PATH: $PATH"
+          # replace \ with /
+          database_path=$database_path | sed 's/\\/\//g'
           echo "database_path after replacing: $database_path"
         else
           . "$GITHUB_ACTION_PATH/venv/bin/activate"
