@@ -12,7 +12,7 @@ inputs:
       if one exists; the value 'true' will always delete an old comment and post a new one
       if necessary. Defaults to false.
     required: false
-    default: 'false'
+    default: "false"
   no-lgtm:
     description: >-
       Set this option to true or false to enable or disable the use of a thread comment that
@@ -142,8 +142,10 @@ runs:
       run: |
         if [[ "${{runner.os}}"  == "Windows" ]]; then
           . "$GITHUB_ACTION_PATH/venv/Scripts/activate"
+          database_path=${{ replace(inputs.database, '\', '\\') }} # fixes bug with Windows paths in bash
         else
           . "$GITHUB_ACTION_PATH/venv/bin/activate"
+          database_path=${{ inputs.database }}
         fi
         cpp-linter \
           --style="${{ inputs.style }}" \
@@ -158,6 +160,6 @@ runs:
           --no-lgtm=${{ inputs.no-lgtm }} \
           --step-summary=${{ inputs.step-summary }} \
           --ignore="${{ inputs.ignore }}" \
-          --database=${{ runner.os == 'Windows' && inputs.database != '' ? replace(inputs.database, '\', '\\') : inputs.database }} \
+          --database=$database_path \
           --file-annotations=${{ inputs.file-annotations }} \
           --extra-arg="${{ inputs.extra-args }}"
