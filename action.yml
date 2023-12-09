@@ -142,12 +142,12 @@ runs:
       run: |
         echo "GITHUB_ACTION_PATH: $GITHUB_ACTION_PATH"
         database_path=${{ inputs.database }}
-        echo "database_path: $database_path"
+        echo "database_path: ${{ inputs.database }}"
         if [[ "${{runner.os}}"  == "Windows" ]]; then
           . "$GITHUB_ACTION_PATH/venv/Scripts/activate"
           echo "PATH: $PATH"
-          # replace \ with /
-          database_path=$database_path | sed 's/\\/\//g'
+          # replace \ with / using sed, use : as sed delimiter
+          database_path=$(${{ inputs.database }} | sed 's:\\:/:g')
           echo "database_path after replacing: $database_path"
         else
           . "$GITHUB_ACTION_PATH/venv/bin/activate"
