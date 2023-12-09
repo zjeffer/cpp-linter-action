@@ -158,6 +158,6 @@ runs:
           --no-lgtm=${{ inputs.no-lgtm }} \
           --step-summary=${{ inputs.step-summary }} \
           --ignore="${{ inputs.ignore }}" \
-          --database=${{ inputs.database }} \
+          --database=${{ runner.os == 'Windows' && inputs.database != '' ? replace(inputs.database, '\', '\\') : inputs.database }} \
           --file-annotations=${{ inputs.file-annotations }} \
           --extra-arg="${{ inputs.extra-args }}"
