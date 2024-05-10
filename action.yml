@@ -222,6 +222,8 @@ runs:
     - name: Install Linux clang dependencies
       if: runner.os == 'Linux'
       shell: bash
+      env:
+        DEBIAN_FRONTEND: noninteractive
       run: |
         sudo apt-get update
         # First try installing from default Ubuntu repositories before trying LLVM script
