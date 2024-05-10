@@ -225,17 +225,26 @@ runs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
+        echo "Running apt-get update"
         sudo DEBIAN_FRONTEND=noninteractive apt-get update
+        echo "Installing clang-format-${{ inputs.version }} and clang-tidy-${{ inputs.version }}"
         # First try installing from default Ubuntu repositories before trying LLVM script
         if ! sudo DEBIAN_FRONTEND=noninteractive apt-get install -y clang-format-${{ inputs.version }} clang-tidy-${{ inputs.version }}; then
+          echo "Installing clang-format-${{ inputs.version }} and clang-tidy-${{ inputs.version }} from LLVM PPA"
           # This LLVM script will add the relevant LLVM PPA: https://apt.llvm.org/
+          echo "Downloading LLVM script"
           wget https://apt.llvm.org/llvm.sh -O $GITHUB_ACTION_PATH/llvm_install.sh
           chmod +x $GITHUB_ACTION_PATH/llvm_install.sh
+          echo "Running LLVM script"
           if sudo $GITHUB_ACTION_PATH/llvm_install.sh ${{ inputs.version }}; then
+            echo "Ran LLVM script successfully, installing clang-format-${{ inputs.version }} and clang-tidy-${{ inputs.version }}"
             sudo DEBIAN_FRONTEND=noninteractive apt-get install -y clang-format-${{ inputs.version }} clang-tidy-${{ inputs.version }}
           fi
+          echo "End of LLVM script"
+        else
+          echo "Successfully installed clang-format-${{ inputs.version }} and clang-tidy-${{ inputs.version }}"
         fi
-
+        echo "End of script"
     - name: Setup python venv (Unix)
       if: runner.os == 'Linux' || runner.os == 'macOS'
       shell: bash
